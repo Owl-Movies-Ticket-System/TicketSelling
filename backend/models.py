@@ -22,6 +22,7 @@ class Cinema(models.Model):
 class Movie(models.Model):
     movie_id = models.AutoField(primary_key=True)
     name = models.CharField(u'电影名称', max_length=50)
+    poster = models.ImageField(u'电影海报', default='posters/default.jpg')
     rate = models.DecimalField(u'电影评分', decimal_places=10, max_digits=10)
     introduction = models.TextField(u'电影简介', max_length=200, default=u'暂无简介')
 
