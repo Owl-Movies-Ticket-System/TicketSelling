@@ -61,10 +61,29 @@ def movie_search(request):
     temp = []
     #return HttpResponse(json.dumps(re), content_type="application/json")  
     for obj in re:
-        temp.append({'name':obj.name,'rate':obj.rate,'rate_people':obj.rate_people,'poster':obj.poster,'introduction':obj.introduction}) ##其实不是返回这些，暂时先这样咯
+        cinemas = available_cinemas(obj.movie_id)
+        temp.append({'name':obj.name,'rate':obj.rate,'rate_people':obj.rate_people,'poster':obj.poster,'introduction':obj.introduction,'available':json.dumps(cinemas)}) ##其实不是返回这些，暂时先这样咯
     return HttpResponse(temp, content_type="application/json")  
 
+def movie_showall(request):
+    if request.method != 'POST':
+        return JsonResponse({'error':'method should be POST'})
+    data = json.loads(request.body)
+    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+        return JsonResponse({'error':'You should log in.'})
+    temp  = []
+    re = Movie.objects.all()
+    for obj in re:
+        temp.append({'name':obj.name,'rate':obj.rate,'rate_people':obj.rate_people,'poster':obj.poster,'introduction':obj.introduction})
+    return HttpResponse(temp, content_type="application/json")  
 
+def available_cinemas(id):
+    objs = Cinema_Movie.objects.filter(movie_id=id)
+    re = []
+    for obj in objs:
+        temp = Cinema.objects.get(cinema_id=obj.id)
+        re.append(temp.name)
+    return re
 
 def generate_token(key, expire=3600):
     r'''

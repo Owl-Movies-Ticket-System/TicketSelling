@@ -30,7 +30,7 @@ class Movie(models.Model):
 class Cinema_Movie(models.Model):
     movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
     cinema_id = models.ForeignKey(Cinema, on_delete=models.CASCADE)
-    price = models.DecimalField(u'影票价格', decimal_places=10, max_digits=10)
+    price = models.DecimalField(u'影票价格', decimal_places=2, max_digits=5)
     on_time = models.DateField(u'上映日期')
 
 class Order(models.Model):
