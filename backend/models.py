@@ -1,6 +1,7 @@
 from django.db import models
 import datetime
 
+
 # Create your models here.
 class Member(models.Model):
     member_id = models.AutoField(primary_key=True)
@@ -9,6 +10,7 @@ class Member(models.Model):
     nickname = models.CharField(u'昵称', max_length=50)
     sex = models.CharField(u'性别', max_length=1)
     birth = models.DateField(u'生日日期')
+
 
 class Cinema(models.Model):
     cinema_id = models.AutoField(primary_key=True)
@@ -19,19 +21,22 @@ class Cinema(models.Model):
     location = models.CharField(u'影院地址', max_length=20)
     phone_number = models.CharField(u'影院电话', max_length=20)
 
+
 class Movie(models.Model):
     movie_id = models.AutoField(primary_key=True)
     name = models.CharField(u'电影名称', max_length=50)
     poster = models.ImageField(u'电影海报', default='posters/default.jpg')
     rate = models.DecimalField(u'电影评分', decimal_places=2, max_digits=3)
-    rate_people = models.IntegerField(u'评价人数',default=0)
+    rate_people = models.IntegerField(u'评价人数', default=0)
     introduction = models.TextField(u'电影简介', max_length=200, default=u'暂无简介')
+
 
 class Cinema_Movie(models.Model):
     movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
     cinema_id = models.ForeignKey(Cinema, on_delete=models.CASCADE)
     price = models.DecimalField(u'影票价格', decimal_places=2, max_digits=5)
     on_time = models.DateField(u'上映日期')
+
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
