@@ -23,13 +23,14 @@ class Movie(models.Model):
     movie_id = models.AutoField(primary_key=True)
     name = models.CharField(u'电影名称', max_length=50)
     poster = models.ImageField(u'电影海报', default='posters/default.jpg')
-    rate = models.DecimalField(u'电影评分', decimal_places=10, max_digits=10)
+    rate = models.DecimalField(u'电影评分', decimal_places=2, max_digits=3)
+    rate_people = models.IntegerField(u'评价人数',default=0)
     introduction = models.TextField(u'电影简介', max_length=200, default=u'暂无简介')
 
 class Cinema_Movie(models.Model):
     movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
     cinema_id = models.ForeignKey(Cinema, on_delete=models.CASCADE)
-    price = models.DecimalField(u'影票价格', decimal_places=10, max_digits=10)
+    price = models.DecimalField(u'影票价格', decimal_places=2, max_digits=5)
     on_time = models.DateField(u'上映日期')
 
 class Order(models.Model):
