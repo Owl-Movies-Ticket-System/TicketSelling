@@ -73,6 +73,30 @@ def movie_search(request):
     return HttpResponse(temp, content_type="application/json")
 
 
+#search cinemas using district
+def cinema_search(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method should be POST'})
+    data = json.loads(request.body)
+    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+        return JsonResponse({'error': 'You should log in.'})
+    re = Cinema.objects.filter(district__contains=data['district'])
+    temp = []
+    for obj in re:
+        temp.append({'name': obj.name, 'location': obj.location, 'phone_number': obj.phone_number})
+    return HttpResponse(temp, content_type="application/json")
+
+
+#show all movies in specific cinema
+def available_movies_in_cinema(id):
+    objs = Cinema_Movie.objects.filter(cinema_id=id)
+    re = []
+    for obj in objs:
+        movie = Movie.objects.get(movie_id=obj.movie_id)
+        re.append({'name': movie.name, 'rate': movie.rate, 'rate_people': movie.rate_people, 'poster': movie.poster,})
+    return re
+
+
 def movie_showall(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'method should be POST'})
@@ -95,6 +119,7 @@ def available_cinemas(id):
         re.append(temp.name)
     return re
 
+
 def tiket_post(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'method should be POST'})
@@ -106,6 +131,7 @@ def tiket_post(request):
     Order.models.create(member_id=member_id,movie_id=data['movie_id'],cinema_id=data['cinema_id']
                         ,stage=data['stage'],seat_row=data['seat_row'],seat_col=data['seat_col'])
     return JsonResponse({'reslut': 'ok'}) 
+
 
 def getseats(request):
     if request.method != 'POST':
@@ -119,6 +145,7 @@ def getseats(request):
         t = (ob.seat_row,ob.seat_col)
         temp.append(t)
     return HttpResponse(temp, content_type="application/json")
+
 
 def generate_token(key, expire=3600):
     r'''
@@ -172,6 +199,7 @@ def certify_time(token):
         # token expired
         return False
     return True
+
 
 def token_getid(token):
     token_str = base64.urlsafe_b64decode(token).decode('utf-8')
