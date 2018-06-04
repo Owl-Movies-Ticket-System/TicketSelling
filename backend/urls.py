@@ -7,5 +7,7 @@ urlpatterns = [
     path('logout', backend_view.logout),
     path('movie/comment', backend_view.movie_comment),
     path('movie/search', backend_view.movie_search),
-    path('movie/all', backend_view.movie_showall)
+    path('movie/all', backend_view.movie_showall),
+    path('tiket/post',backend_view.tiket_post),
+    path('tiket/seat',backend_view.getseats)
 ]
