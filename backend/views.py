@@ -73,30 +73,6 @@ def movie_search(request):
     return HttpResponse(temp, content_type="application/json")
 
 
-#search cinemas using district
-def cinema_search(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'method should be POST'})
-    data = json.loads(request.body)
-    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
-        return JsonResponse({'error': 'You should log in.'})
-    re = Cinema.objects.filter(district__contains=data['district'])
-    temp = []
-    for obj in re:
-        temp.append({'name': obj.name, 'location': obj.location, 'phone_number': obj.phone_number})
-    return HttpResponse(temp, content_type="application/json")
-
-
-#show all movies in specific cinema
-def available_movies_in_cinema(id):
-    objs = Cinema_Movie.objects.filter(cinema_id=id)
-    re = []
-    for obj in objs:
-        movie = Movie.objects.get(movie_id=obj.movie_id)
-        re.append({'name': movie.name, 'rate': movie.rate, 'rate_people': movie.rate_people, 'poster': movie.poster,})
-    return re
-
-
 def movie_showall(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'method should be POST'})
@@ -145,6 +121,30 @@ def getseats(request):
         t = (ob.seat_row,ob.seat_col)
         temp.append(t)
     return HttpResponse(temp, content_type="application/json")
+
+
+#search cinemas using district
+def cinema_search(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method should be POST'})
+    data = json.loads(request.body)
+    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+        return JsonResponse({'error': 'You should log in.'})
+    re = Cinema.objects.filter(district__contains=data['district'])
+    temp = []
+    for obj in re:
+        temp.append({'name': obj.name, 'location': obj.location, 'phone_number': obj.phone_number})
+    return HttpResponse(temp, content_type="application/json")
+
+
+#show all movies in specific cinema
+def available_movies_in_cinema(id):
+    objs = Cinema_Movie.objects.filter(cinema_id=id)
+    re = []
+    for obj in objs:
+        movie = Movie.objects.get(movie_id=obj.movie_id)
+        re.append({'name': movie.name, 'rate': movie.rate, 'rate_people': movie.rate_people, 'poster': movie.poster,})
+    return re
 
 
 def generate_token(key, expire=3600):

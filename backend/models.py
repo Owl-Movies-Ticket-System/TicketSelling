@@ -48,3 +48,16 @@ class Order(models.Model):
     stage = models.CharField(u'场次',max_length=10,default='null')
     seat_row = models.IntegerField(u'座位行数',default=0)
     seat_col = models.IntegerField(u'座位列数',default=0)
+
+
+class Food_Supplier(models.Model):
+    supplier_id = models.AutoField(primary_key=True)
+    name = models.CharField(u'餐饮供应商名称', max_length=50)
+    cinema_id = models.ForeignKey(Cinema, on_delete=models.CASCADE)
+
+
+class Food_Service(models.Model):
+    service_id = models.AutoField(primary_key=True)
+    name = models.CharField(u'餐饮服务名称', max_length=50)
+    introduction = models.TextField(u'电影简介', max_length=200, default=u'暂无简介')
+    supplier_id = models.ForeignKey(Food_Supplier, on_delete=models.CASCADE)
