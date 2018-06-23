@@ -68,7 +68,7 @@ def movie_search(request):
     # return HttpResponse(json.dumps(re), content_type="application/json")
     for obj in re:
         cinemas = available_cinemas(obj.movie_id)
-        temp.append({'name': obj.name, 'rate': obj.rate, 'rate_people': obj.rate_people, 'poster': obj.poster,
+        temp.append({'name': obj.name,'director':obj.director,'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': obj.rate, 'rate_people': obj.rate_people, 'poster': obj.poster,
                      'introduction': obj.introduction, 'available': json.dumps(cinemas)})  ##其实不是返回这些，暂时先这样咯
     return HttpResponse(temp, content_type="application/json")
 
@@ -82,7 +82,7 @@ def movie_showall(request):
     temp = []
     re = Movie.objects.all()
     for obj in re:
-        temp.append({'name': obj.name, 'rate': obj.rate, 'rate_people': obj.rate_people, 'poster': obj.poster,
+        temp.append({'name': obj.name,'director':obj.director,'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': obj.rate, 'rate_people': obj.rate_people, 'poster': obj.poster,
                      'introduction': obj.introduction})
     return HttpResponse(temp, content_type="application/json")
 
