@@ -7,6 +7,7 @@ import json
 import time
 import base64
 import hmac
+import sys
 
 
 # Create your views here.
@@ -68,7 +69,11 @@ def movie_search(request):
     # return HttpResponse(json.dumps(re), content_type="application/json")
     for obj in re:
         cinemas = available_cinemas(obj.movie_id)
-        temp.append({'name': obj.name,'director':obj.director,'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': obj.rate, 'rate_people': obj.rate_people, 'poster': obj.poster,
+        f = open('./'+str(obj.poster),"rb")
+        data = f.read() #这样data是一个b开头的ASCII数字。
+        f.close()
+        print(str(obj.poster))
+        temp.append({'name': obj.name,'director':obj.director,"poster":data,'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': obj.rate, 'rate_people': obj.rate_people,
                      'introduction': obj.introduction, 'available': json.dumps(cinemas)})  ##其实不是返回这些，暂时先这样咯
     return HttpResponse(temp, content_type="application/json")
 
@@ -82,7 +87,11 @@ def movie_showall(request):
     temp = []
     re = Movie.objects.all()
     for obj in re:
-        temp.append({'name': obj.name,'director':obj.director,'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': obj.rate, 'rate_people': obj.rate_people, 'poster': obj.poster,
+        f = open('./'+str(obj.poster),"rb")
+        data = f.read() #这样data是一个b开头的ASCII数字。
+        f.close()
+        print(str(obj.poster))
+        temp.append({'name': obj.name,'director':obj.director,"poster":data,'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': obj.rate, 'rate_people': obj.rate_people, 
                      'introduction': obj.introduction})
     return HttpResponse(temp, content_type="application/json")
 
