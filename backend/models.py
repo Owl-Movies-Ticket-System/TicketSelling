@@ -25,6 +25,12 @@ class Cinema(models.Model):
 class Movie(models.Model):
     movie_id = models.AutoField(primary_key=True)
     name = models.CharField(u'电影名称', max_length=50)
+    director = models.CharField(u'导演', max_length=50,default="unknow")
+    protagonist = models.CharField(u'主演', max_length=50,default="unknow")
+    types = models.CharField(u'类型', max_length=50,default="unknow")
+    area = models.CharField(u'地区', max_length=50,default="欧美亚")
+    language = models.CharField(u'语言', max_length=50,default="English")
+    len = models.CharField(u'片长', max_length=50,default="unknow")
     poster = models.ImageField(u'电影海报', default='posters/default.jpg')
     rate = models.DecimalField(u'电影评分', decimal_places=2, max_digits=3)
     rate_people = models.IntegerField(u'评价人数', default=0)
