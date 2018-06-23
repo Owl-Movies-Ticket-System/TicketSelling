@@ -138,31 +138,65 @@ def cinema_search(request):
 
 
 #show all movies in specific cinema
-def available_movies_in_cinema(id):
+def available_movies_in_cinema(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method should be POST'})
+    data = json.loads(request.body)
+    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+        return JsonResponse({'error': 'You should log in.'})
+    id = data['id']
     objs = Cinema_Movie.objects.filter(cinema_id=id)
     re = []
     for obj in objs:
         movie = Movie.objects.get(movie_id=obj.movie_id)
-        re.append({'name': movie.name, 'rate': movie.rate, 'rate_people': movie.rate_people, 'poster': movie.poster,})
-    return re
+        re.append({'movie_id': obj.movie_id, 'name': movie.name, 'rate': movie.rate,
+                   'rate_people': movie.rate_people, 'poster': movie.poster,
+                   'price': obj.price, 'on_time': obj.on_time, 'stage': obj.stage})
+    return HttpResponse(re, content_type="application/json")
+
+
+#get specific movie stage information in specific cinema
+def get_stage_info(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method should be POST'})
+    data = json.loads(request.body)
+    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+        return JsonResponse({'error': 'You should log in.'})
+    re = Cinema_Movie.objects.filter(cinema_id=data['cinema_id']).filter(movie_id=data['movie_id'])
+    temp = []
+    for obj in re:
+        temp.append({'on_time': obj.on_time, 'stage': obj.stage})
+    return HttpResponse(temp, content_type="application/json")
 
 
 #show all food suppliers in specific cinema
-def available_food_suppliers_in_cinema(id):
+def available_food_suppliers_in_cinema(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method should be POST'})
+    data = json.loads(request.body)
+    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+        return JsonResponse({'error': 'You should log in.'})
+    id = data['id']
     objs = Food_Supplier.objects.filter(cinema_id=id)
     re = []
     for obj in objs:
         re.append({'name': obj.name, 'id': obj.supplier_id})
-    return re
+    return HttpResponse(re, content_type="application/json")
 
 
 #show all food services provided by specific suppliers
-def available_food_services_by_supplier(id):
+def available_food_services_by_supplier(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method should be POST'})
+    data = json.loads(request.body)
+    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+        return JsonResponse({'error': 'You should log in.'})
+    id = data['id']
     objs = Food_Service.objects.filter(supplier_id=id)
     re = []
     for obj in objs:
         re.append({'service_id': obj.serve_id, 'name': obj.name, 'introduction': obj.introduction})
-    return re
+    return HttpResponse(re, content_type="application/json")
 
 
 def generate_token(key, expire=3600):
