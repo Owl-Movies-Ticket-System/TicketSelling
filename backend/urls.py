@@ -8,6 +8,7 @@ urlpatterns = [
     path('movie/comment', backend_view.movie_comment),
     path('movie/search', backend_view.movie_search),
     path('movie/all', backend_view.movie_showall),
+    path('img',backend_view.get_img),
     path('cinema/search', backend_view.cinema_search),
     path('cinema/available_movies', backend_view.available_movies_in_cinema),
     path('cinema/get_stage_info', backend_view.get_stage_info),

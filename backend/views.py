@@ -8,6 +8,8 @@ import time
 import base64
 import hmac
 import sys
+import numpy as np
+import matplotlib.pylab as plt
 
 
 # Create your views here.
@@ -69,11 +71,7 @@ def movie_search(request):
     # return HttpResponse(json.dumps(re), content_type="application/json")
     for obj in re:
         cinemas = available_cinemas(obj.movie_id)
-        f = open('./'+str(obj.poster),"rb")
-        data = f.read() #这样data是一个b开头的ASCII数字。
-        f.close()
-        print(str(obj.poster))
-        temp.append({'name': obj.name,'director':obj.director,"poster":data,'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': obj.rate, 'rate_people': obj.rate_people,
+        temp.append({'name': obj.name,'director':obj.director,"poster":str(obj.poster),'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': str(obj.rate), 'rate_people': obj.rate_people,
                      'introduction': obj.introduction, 'available': json.dumps(cinemas)})  ##其实不是返回这些，暂时先这样咯
     return HttpResponse(temp, content_type="application/json")
 
@@ -87,14 +85,21 @@ def movie_showall(request):
     temp = []
     re = Movie.objects.all()
     for obj in re:
-        f = open('./'+str(obj.poster),"rb")
-        data = f.read() #这样data是一个b开头的ASCII数字。
-        f.close()
-        print(str(obj.poster))
-        temp.append({'name': obj.name,'director':obj.director,"poster":data,'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': obj.rate, 'rate_people': obj.rate_people, 
+        temp.append({'name': obj.name,'director':obj.director,"poster":str(obj.poster),'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': str(obj.rate), 'rate_people': obj.rate_people, 
                      'introduction': obj.introduction})
     return HttpResponse(temp, content_type="application/json")
 
+def get_img(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method should be POST'})
+    data = json.loads(request.body)
+    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+        return JsonResponse({'error': 'You should log in.'})
+    p = data['img']
+    print(sys.path[0])
+    img = plt.imread(str(p)) # 加载当前文件夹中名为BTD.jpg的图片
+    x = img.tobytes()
+    return HttpResponse(x, content_type="application/json")
 
 def available_cinemas(id):
     objs = Cinema_Movie.objects.filter(movie_id=id)
