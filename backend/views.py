@@ -8,7 +8,6 @@ import time
 import base64
 import hmac
 import sys
-import numpy as np
 import matplotlib.pylab as plt
 
 
