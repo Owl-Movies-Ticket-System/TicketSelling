@@ -96,9 +96,10 @@ def get_img(request):
         return JsonResponse({'error': 'You should log in.'})
     p = data['img']
     print(sys.path[0])
-    img = plt.imread(str(p)) # 加载当前文件夹中名为BTD.jpg的图片
-    x = img.tobytes()
-    return HttpResponse(x, content_type="application/json")
+    f = open(str(p),"rb+")
+    img = f.read() 
+    f.close()
+    return HttpResponse(img, content_type="application/json")
 
 def available_cinemas(id):
     objs = Cinema_Movie.objects.filter(movie_id=id)
