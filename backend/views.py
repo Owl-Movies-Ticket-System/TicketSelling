@@ -161,9 +161,9 @@ def available_movies_in_cinema(request):
     re = []
     for obj in objs:
         movie = Movie.objects.get(movie_id=obj.id)
-        re.append({'movie_id': obj.movie_id, 'name': movie.name, 'rate': movie.rate,
-                   'rate_people': movie.rate_people, 'poster': movie.poster,
-                   'price': obj.price, 'on_time': obj.on_time, 'stage': obj.stage})
+        re.append({'movie_id': str(obj.id), 'name': str(movie.name), 'rate': str(movie.rate),
+                   'rate_people': str(movie.rate_people), 'poster': str(movie.poster),
+                   'price': str(obj.price), 'on_time': str(obj.on_time), 'stage': str(obj.stage)})
     return HttpResponse(re, content_type="application/json")
 
 
