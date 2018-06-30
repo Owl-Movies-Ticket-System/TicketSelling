@@ -21,9 +21,9 @@ def login(request):
     if Member.objects.filter(phone_number=data['phone_number'], password=data['password']).exists():
         # request.session['member_id'] = Member.objects.get(phone_number=data['phone_number'],password=data['password']).member_id
         token = generate_token(data['phone_number'])
-        return JsonResponse({'reslut': 'ok', 'authorization': token})
+        return JsonResponse({'result': 'ok', 'authorization': token})
     else:
-        return JsonResponse({'reslut': 'Your username and password did not match.'})
+        return JsonResponse({'result': 'Your username and password did not match.'})
 
 
 def logup(request):
@@ -34,7 +34,7 @@ def logup(request):
         return JsonResponse({'result': 'the phone_number has been used.'})
     Member.objects.create(phone_number=data['phone_number'], password=data['password'],
                           nickname=data['nickname'], sex=data['sex'], birth=data['birth'])
-    return JsonResponse({'reslut': 'ok'})
+    return JsonResponse({'result': 'ok'})
 
 
 def logout(request):
@@ -118,7 +118,7 @@ def tiket_post(request):
     member_id = Member.objects.get(phone_number=id)
     Order.models.create(member_id=member_id,movie_id=data['movie_id'],cinema_id=data['cinema_id']
                         ,stage=data['stage'],seat_row=data['seat_row'],seat_col=data['seat_col'])
-    return JsonResponse({'reslut': 'ok'}) 
+    return JsonResponse({'result': 'ok'}) 
 
 
 def getseats(request):
