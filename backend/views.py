@@ -150,7 +150,7 @@ def cinema_search(request):
     re = Cinema.objects.filter(district__contains=data['district'])
     temp = []
     for obj in re:
-        temp.append({'id': obj.cinema_id, 'name': obj.name, 'location': obj.location, 'phone_number': obj.phone_number})
+        temp.append({'id': obj.cinema_id, 'name': obj.name,'photo':str(obj.cinema_photo), 'location': obj.location, 'phone_number': obj.phone_number})
     return HttpResponse(temp, content_type="application/json")
 
 
@@ -165,10 +165,10 @@ def available_movies_in_cinema(request):
     objs = Cinema_Movie.objects.filter(cinema_id=id)
     re = []
     for obj in objs:
-        movie = Movie.objects.get(movie_id=obj.movie_id)
-        re.append({'movie_id': obj.movie_id, 'name': movie.name, 'rate': movie.rate,
-                   'rate_people': movie.rate_people, 'poster': movie.poster,
-                   'price': obj.price, 'on_time': obj.on_time, 'stage': obj.stage})
+        movie = Movie.objects.get(movie_id=obj.id)
+        re.append({'movie_id': str(obj.id), 'name': str(movie.name), 'rate': str(movie.rate),
+                   'rate_people': str(movie.rate_people), 'poster': str(movie.poster),
+                   'price': str(obj.price), 'on_time': str(obj.on_time), 'stage': str(obj.stage)})
     return HttpResponse(re, content_type="application/json")
 
 

@@ -1,0 +1,14 @@
+部署云主机：
+腾讯云主机ubuntu16.06(1GB)
+
+部署原始镜像：
+一个自制的拥有python3.6以及django2.0.5环境的ubuntu镜像
+
+创建新镜像命令：
+sudo docker build -f /Docker/Dockerfile -t owl:latest .
+
+运行容器命令：
+sudo docker run -p 8080:8000 owl:latest
+
+访问连接：
+123.207.55.27:8080
