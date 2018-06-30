@@ -160,7 +160,7 @@ def available_movies_in_cinema(request):
     objs = Cinema_Movie.objects.filter(cinema_id=id)
     re = []
     for obj in objs:
-        movie = Movie.objects.get(movie_id=obj.movie_id)
+        movie = Movie.objects.get(movie_id=obj.id)
         re.append({'movie_id': obj.movie_id, 'name': movie.name, 'rate': movie.rate,
                    'rate_people': movie.rate_people, 'poster': movie.poster,
                    'price': obj.price, 'on_time': obj.on_time, 'stage': obj.stage})
