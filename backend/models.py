@@ -20,6 +20,7 @@ class Cinema(models.Model):
     district = models.CharField(u'区', max_length=20)
     location = models.CharField(u'影院地址', max_length=20)
     phone_number = models.CharField(u'影院电话', max_length=20)
+    cinema_photo = models.ImageField(u'影院照片',default = 'cinema_photos/default.jpg')
 
 
 class Movie(models.Model):
