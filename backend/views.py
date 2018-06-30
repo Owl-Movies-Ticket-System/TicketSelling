@@ -84,7 +84,7 @@ def movie_showall(request):
     temp = []
     re = Movie.objects.all()
     for obj in re:
-        temp.append({'name': obj.name,'director':obj.director,"poster":str(obj.poster),'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': str(obj.rate), 'rate_people': obj.rate_people, 
+        temp.append({'name':obj.name,"director":obj.director,"poster":str(obj.poster),'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': str(obj.rate), 'rate_people': obj.rate_people, 
                      'introduction': obj.introduction})
     return HttpResponse(temp, content_type="application/json")
 
