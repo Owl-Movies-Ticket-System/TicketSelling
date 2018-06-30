@@ -145,7 +145,7 @@ def cinema_search(request):
     re = Cinema.objects.filter(district__contains=data['district'])
     temp = []
     for obj in re:
-        temp.append({'id': obj.cinema_id, 'name': obj.name, 'location': obj.location, 'phone_number': obj.phone_number})
+        temp.append({'id': obj.cinema_id, 'name': obj.name,'photo':str(obj.cinema_photo), 'location': obj.location, 'phone_number': obj.phone_number})
     return HttpResponse(temp, content_type="application/json")
 
 
