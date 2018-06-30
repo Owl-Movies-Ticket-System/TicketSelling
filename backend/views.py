@@ -21,9 +21,9 @@ def login(request):
     if Member.objects.filter(phone_number=data['phone_number'], password=data['password']).exists():
         # request.session['member_id'] = Member.objects.get(phone_number=data['phone_number'],password=data['password']).member_id
         token = generate_token(data['phone_number'])
-        return JsonResponse({'reslut': 'ok', 'authorization': token})
+        return JsonResponse({'result': 'ok', 'authorization': token})
     else:
-        return JsonResponse({'reslut': 'Your username and password did not match.'})
+        return JsonResponse({'result': 'Your username and password did not match.'})
 
 
 def logup(request):
@@ -34,7 +34,7 @@ def logup(request):
         return JsonResponse({'result': 'the phone_number has been used.'})
     Member.objects.create(phone_number=data['phone_number'], password=data['password'],
                           nickname=data['nickname'], sex=data['sex'], birth=data['birth'])
-    return JsonResponse({'reslut': 'ok'})
+    return JsonResponse({'result': 'ok'})
 
 
 def logout(request):
@@ -70,7 +70,7 @@ def movie_search(request):
     # return HttpResponse(json.dumps(re), content_type="application/json")
     for obj in re:
         cinemas = available_cinemas(obj.movie_id)
-        temp.append({'name': obj.name,'director':obj.director,"poster":str(obj.poster),'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': str(obj.rate), 'rate_people': obj.rate_people,
+        temp.append({'name': obj.name,'id':obj.movie_id,'director':obj.director,"poster":str(obj.poster),'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': str(obj.rate), 'rate_people': obj.rate_people,
                      'introduction': obj.introduction, 'available': json.dumps(cinemas)})  ##其实不是返回这些，暂时先这样咯
     return HttpResponse(temp, content_type="application/json")
 
@@ -84,29 +84,27 @@ def movie_showall(request):
     temp = []
     re = Movie.objects.all()
     for obj in re:
-        temp.append({'name': obj.name,'director':obj.director,"poster":str(obj.poster),'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': str(obj.rate), 'rate_people': obj.rate_people, 
+        temp.append({'name':obj.name,"director":obj.director,"poster":str(obj.poster),'protagonist':obj.protagonist,'types':obj.types,'area':obj.area,'language':obj.language,'len':obj.len, 'rate': str(obj.rate), 'rate_people': obj.rate_people, 
                      'introduction': obj.introduction})
     return HttpResponse(temp, content_type="application/json")
 
 def get_img(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'method should be POST'})
-    data = json.loads(request.body)
-    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
-        return JsonResponse({'error': 'You should log in.'})
-    p = data['img']
+    #data = json.loads(request.body)
+    #if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+    #   return JsonResponse({'error': 'You should log in.'})
+    p = request.GET.get('img')
     print(sys.path[0])
     f = open(str(p),"rb+")
     img = f.read() 
     f.close()
-    return HttpResponse(img, content_type="application/json")
+    return HttpResponse(img, content_type="image/jpeg")
 
 def available_cinemas(id):
     objs = Cinema_Movie.objects.filter(movie_id=id)
     re = []
     for obj in objs:
         temp = Cinema.objects.get(cinema_id=obj.id)
-        re.append(temp.name)
+        re.append({'name':temp.name,'id':temp.cinema_id})
     return re
 
 
@@ -120,7 +118,7 @@ def tiket_post(request):
     member_id = Member.objects.get(phone_number=id)
     Order.models.create(member_id=member_id,movie_id=data['movie_id'],cinema_id=data['cinema_id']
                         ,stage=data['stage'],seat_row=data['seat_row'],seat_col=data['seat_col'])
-    return JsonResponse({'reslut': 'ok'}) 
+    return JsonResponse({'result': 'ok'}) 
 
 
 def getseats(request):
@@ -147,7 +145,7 @@ def cinema_search(request):
     re = Cinema.objects.filter(district__contains=data['district'])
     temp = []
     for obj in re:
-        temp.append({'id': obj.cinema_id, 'name': obj.name, 'location': obj.location, 'phone_number': obj.phone_number})
+        temp.append({'id': obj.cinema_id, 'name': obj.name,'photo':str(obj.cinema_photo), 'location': obj.location, 'phone_number': obj.phone_number})
     return HttpResponse(temp, content_type="application/json")
 
 
@@ -162,10 +160,10 @@ def available_movies_in_cinema(request):
     objs = Cinema_Movie.objects.filter(cinema_id=id)
     re = []
     for obj in objs:
-        movie = Movie.objects.get(movie_id=obj.movie_id)
-        re.append({'movie_id': obj.movie_id, 'name': movie.name, 'rate': movie.rate,
-                   'rate_people': movie.rate_people, 'poster': movie.poster,
-                   'price': obj.price, 'on_time': obj.on_time, 'stage': obj.stage})
+        movie = Movie.objects.get(movie_id=obj.id)
+        re.append({'movie_id': str(obj.id), 'name': str(movie.name), 'rate': str(movie.rate),
+                   'rate_people': str(movie.rate_people), 'poster': str(movie.poster),
+                   'price': str(obj.price), 'on_time': str(obj.on_time), 'stage': str(obj.stage)})
     return HttpResponse(re, content_type="application/json")
 
 
