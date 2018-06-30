@@ -49,7 +49,7 @@ class Cinema_Movie(models.Model):
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True)
     member_id = models.ForeignKey(Member, on_delete=models.CASCADE)
-    create_date = models.DateField(u'订单日期', default=datetime.datetime.now().strftime("%Y-%m-%d %H:%I:%S"))
+    create_date = models.DateField(u'订单日期', default=datetime.datetime.now().strftime("%Y-%m-%d"))
     movie_id = models.ForeignKey(Movie, on_delete=models.CASCADE)
     cinema_id = models.ForeignKey(Cinema_Movie, on_delete=models.CASCADE)
     stage = models.CharField(u'场次',max_length=10,default='null')

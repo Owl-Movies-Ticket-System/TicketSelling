@@ -115,9 +115,14 @@ def tiket_post(request):
     if certify_time(request.META.get("HTTP_AUTHOR")) == False:
         return JsonResponse({'error': 'You should log in.'})
     id = token_getid(request.META.get("HTTP_AUTHOR"))
-    member_id = Member.objects.get(phone_number=id)
-    Order.models.create(member_id=member_id,movie_id=data['movie_id'],cinema_id=data['cinema_id']
-                        ,stage=data['stage'],seat_row=data['seat_row'],seat_col=data['seat_col'])
+    print(id)
+    member_id = Member.objects.get(phone_number=data['phone_num'])
+    movie_id = Movie.objects.get(movie_id=data['movie_id'])
+    cinema_id = Cinema_Movie.objects.get(cinema_id=data['cinema_id'])
+    Order.objects.create(member_id=member_id,movie_id=movie_id,cinema_id=cinema_id
+                        ,stage=data['stage'],
+                        seat_row=data['seat_row'],
+                        seat_col=data['seat_col'])
     return JsonResponse({'result': 'ok'}) 
 
 
@@ -268,4 +273,5 @@ def certify_time(token):
 def token_getid(token):
     token_str = base64.urlsafe_b64decode(token).decode('utf-8')
     token_list = token_str.split(':')
+    print(token_list)
     return token_list[1]
