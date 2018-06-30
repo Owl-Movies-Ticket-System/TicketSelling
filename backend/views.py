@@ -89,24 +89,22 @@ def movie_showall(request):
     return HttpResponse(temp, content_type="application/json")
 
 def get_img(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'method should be POST'})
-    data = json.loads(request.body)
-    if certify_time(request.META.get("HTTP_AUTHOR")) == False:
-        return JsonResponse({'error': 'You should log in.'})
-    p = data['img']
+    #data = json.loads(request.body)
+    #if certify_time(request.META.get("HTTP_AUTHOR")) == False:
+    #   return JsonResponse({'error': 'You should log in.'})
+    p = request.GET.get('img')
     print(sys.path[0])
     f = open(str(p),"rb+")
     img = f.read() 
     f.close()
-    return HttpResponse(img, content_type="application/json")
+    return HttpResponse(img, content_type="image/jpeg")
 
 def available_cinemas(id):
     objs = Cinema_Movie.objects.filter(movie_id=id)
     re = []
     for obj in objs:
         temp = Cinema.objects.get(cinema_id=obj.id)
-        re.append(temp.name)
+        re.append({'name':temp.name,'id':temp.cinema_id})
     return re
 
 
