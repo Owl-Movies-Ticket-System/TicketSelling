@@ -6,7 +6,8 @@ import datetime
 class Member(models.Model):
     member_id = models.AutoField(primary_key=True)
     phone_number = models.CharField(u'手机号码', max_length=20, db_index=True)
-    password = models.CharField(u'密码', max_length=50)
+    password = models.CharField(u'密码', max_length=80)
+    salt = models.CharField(u'盐', max_length=80,default='salt1234')
     nickname = models.CharField(u'昵称', max_length=50)
     sex = models.CharField(u'性别', max_length=1)
     birth = models.DateField(u'生日日期')

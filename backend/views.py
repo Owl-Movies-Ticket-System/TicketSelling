@@ -9,6 +9,9 @@ import base64
 import hmac
 import sys
 import matplotlib.pylab as plt
+import hashlib
+import string 
+import random
 
 
 # Create your views here.
@@ -20,15 +23,23 @@ def login(request):
         return JsonResponse({'error':'repeated login'})
     data = json.loads(request.body)
     # t = getattr(has,'member_id',-1)
-    if Member.objects.filter(phone_number=data['phone_number'], password=data['password']).exists():
+    if Member.objects.filter(phone_number=data['phone_number']).exists():
         # request.session['member_id'] = Member.objects.get(phone_number=data['phone_number'],password=data['password']).member_id
         # token = generate_token(data['phone_number'])
-        request.session['log_in'] = True
-        request.session['user_id'] = data['phone_number']
-        request.session['password'] = data['password']
-        return JsonResponse({'result': 'ok'})
+        this_user = Member.objects.get(phone_number=data['phone_number'])
+        salt = this_user.salt
+        pas_salt = data['password'] + salt
+        if Member.objects.filter(phone_number=data['phone_number'],password=hashlib.sha256(pas_salt.encode('utf-8')).hexdigest()).exists():
+            request.session['log_in'] = True
+            request.session['user_id'] = data['phone_number']
+            request.session['password'] = data['password']
+            print(hashlib.sha256(pas_salt.encode('utf-8')).hexdigest())
+            return JsonResponse({'result': 'ok'})
+        else:
+            print(hashlib.sha256(pas_salt.encode('utf-8')).hexdigest())
+            return JsonResponse({'result': 'Your username and password did not match.'})
     else:
-        return JsonResponse({'result': 'Your username and password did not match.'})
+        return JsonResponse({'error':'no such user'})
 
 
 def logup(request):
@@ -37,8 +48,11 @@ def logup(request):
     data = json.loads(request.body)
     if Member.objects.filter(phone_number=data['phone_number']).exists():
         return JsonResponse({'result': 'the phone_number has been used.'})
-    Member.objects.create(phone_number=data['phone_number'], password=data['password'],
-                          nickname=data['nickname'], sex=data['sex'], birth=data['birth'])
+    salt = salt_generator()
+    pas_salt = data['password'] + salt
+    Member.objects.create(phone_number=data['phone_number'], password=hashlib.sha256(pas_salt.encode('utf-8')).hexdigest(),
+                          nickname=data['nickname'], sex=data['sex'], birth=data['birth'], salt=salt)
+    print(hashlib.sha256(data['password'].encode('utf-8')).hexdigest())
     return JsonResponse({'result': 'ok'})
 
 
@@ -227,3 +241,8 @@ def available_food_services_by_supplier(request):
     for obj in objs:
         re.append({'service_id': obj.serve_id, 'name': obj.name, 'introduction': obj.introduction})
     return HttpResponse(re, content_type="application/json")
+
+def salt_generator():
+    size=30
+    chars=string.ascii_uppercase + string.digits + string.ascii_lowercase
+    return ''.join(random.choice(chars) for _ in range(size))
